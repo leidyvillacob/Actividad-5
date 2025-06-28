@@ -1,1 +1,36 @@
+class Vendedor:
+    def __init__(self, nombre, apellidos):
+        self.nombre = nombre
+        self.apellidos = apellidos
+        self.edad = None
+
+    def verificar_edad(self, edad):
+        if edad < 0 or edad > 120:
+            raise ValueError("La edad no puede ser negativa ni mayor a 120.")
+        if edad <= 18:
+            raise ValueError("El vendedor debe ser mayor de 18 años.")
+        self.edad = edad
+
+    def imprimir(self):
+        print(f"Nombre del vendedor = {self.nombre}")
+        print(f"Apellidos del vendedor = {self.apellidos}")
+        print(f"Edad del vendedor = {self.edad}")
+
+
+# Bloque principal para ejecución en Colab
+def main():
+    try:
+        nombre = input("Nombre del vendedor: ")
+        apellidos = input("Apellidos del vendedor: ")
+        edad = int(input("Edad del vendedor: "))
+
+        vendedor = Vendedor(nombre, apellidos)
+        vendedor.verificar_edad(edad)
+        vendedor.imprimir()
+
+    except ValueError as e:
+        print(f"Error: {e}")
+
+# Ejecutar programa
+main()
 
