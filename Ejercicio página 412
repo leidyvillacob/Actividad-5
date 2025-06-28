@@ -1,1 +1,35 @@
+import math
+
+def calcular_logaritmo_neperiano(valor):
+    try:
+        if valor < 0:
+            raise ArithmeticError("El valor debe ser un número positivo")
+        resultado = math.log(valor)
+        print(f"Resultado del logaritmo: {resultado}")
+    except ArithmeticError:
+        print("El valor debe ser un número positivo para calcular el logaritmo")
+    except ValueError:
+        print("El valor debe ser numérico para calcular el logaritmo")
+
+def calcular_raiz_cuadrada(valor):
+    try:
+        if valor < 0:
+            raise ArithmeticError("El valor debe ser un número positivo")
+        resultado = math.sqrt(valor)
+        print(f"Resultado de la raíz cuadrada: {resultado}")
+    except ArithmeticError:
+        print("El valor debe ser un número positivo para calcular la raíz cuadrada")
+    except ValueError:
+        print("El valor debe ser numérico para calcular la raíz cuadrada")
+
+# Programa principal
+def main():
+    try:
+        valor = float(input("Valor numérico: "))
+        calcular_logaritmo_neperiano(valor)
+        calcular_raiz_cuadrada(valor)
+    except ValueError:
+        print("Entrada inválida. Debe ingresar un número.")
+
+main()
 
