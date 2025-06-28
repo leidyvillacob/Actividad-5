@@ -1,0 +1,27 @@
+def main():
+    # Primer bloque try
+    try:
+        print("Ingresando al primer try")
+        cociente = 10000 / 0  # Esto lanza una excepción ZeroDivisionError
+        print("Después de la división")  # Esta línea no se ejecuta
+    except ZeroDivisionError:
+        print("División por cero")
+    finally:
+        print("Ingresando al primer finally")
+
+    # Segundo bloque try
+    try:
+        print("Ingresando al segundo try")
+        objeto = None
+        objeto_str = objeto.toString()  # En Python: objeto.__str__(), pero dará error porque es None
+        print("Imprimiendo objeto")  # Esta línea no se ejecuta
+    except ArithmeticError:
+        print("División por cero")
+    except Exception as e:
+        print("Ocurrió una excepción")
+    finally:
+        print("Ingresando al segundo finally")
+
+
+if __name__ == "__main__":
+    main()
