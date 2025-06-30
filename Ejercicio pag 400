@@ -1,27 +1,79 @@
-def main():
-    # Primer bloque try
-    try:
-        print("Ingresando al primer try")
-        cociente = 10000 / 0  # Esto lanza una excepción ZeroDivisionError
-        print("Después de la división")  # Esta línea no se ejecuta
-    except ZeroDivisionError:
-        print("División por cero")
-    finally:
-        print("Ingresando al primer finally")
-
-    # Segundo bloque try
-    try:
-        print("Ingresando al segundo try")
-        objeto = None
-        objeto_str = objeto.toString()  # En Python: objeto.__str__(), pero dará error porque es None
-        print("Imprimiendo objeto")  # Esta línea no se ejecuta
-    except ArithmeticError:
-        print("División por cero")
-    except Exception as e:
-        print("Ocurrió una excepción")
-    finally:
-        print("Ingresando al segundo finally")
+import tkinter as tk
+from tkinter import messagebox
 
 
+class PruebaExcepcionesApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Prueba de Excepciones")
+        self.root.configure(bg="#f0f8ff")  # Fondo azul claro
+        self.root.resizable(False, False)  # No redimensionable
+
+        # ---- Título ----
+        tk.Label(root, text="Gestor de Excepciones", font=("Arial", 16, "bold"),
+                 bg="#f0f8ff", fg="#003366").grid(row=0, column=0, columnspan=2, pady=10)
+
+        # ---- Botones de acciones ----
+        boton_style = {"width": 20, "height": 2, "bg": "#4CAF50", "fg": "white",
+                       "font": ("Arial", 10, "bold"), "activebackground": "#45a049"}
+
+        tk.Button(root, text="Ejecutar Primer Try", command=self.primer_try, **boton_style).grid(row=1, column=0, padx=10, pady=5)
+        tk.Button(root, text="Ejecutar Segundo Try", command=self.segundo_try, **boton_style).grid(row=1, column=1, padx=10, pady=5)
+
+        # ---- Área de salida ----
+        tk.Label(root, text="Salida:", bg="#f0f8ff", fg="#003366", font=("Arial", 12, "bold")).grid(row=2, column=0, columnspan=2)
+
+        self.text_salida = tk.Text(root, width=65, height=15, state="disabled",
+                                   bg="#ffffff", fg="#000000", font=("Consolas", 10))
+        self.text_salida.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
+
+        # ---- Botón limpiar ----
+        tk.Button(root, text="Limpiar Salida", command=self.limpiar_salida,
+                  width=44, height=2, bg="#f44336", fg="white", font=("Arial", 10, "bold"),
+                  activebackground="#e53935").grid(row=4, column=0, columnspan=2, pady=10)
+
+    # --------------------------
+    def primer_try(self):
+        self.escribir_salida("→ Ingresando al primer try\n")
+        try:
+            cociente = 10000 / 0  # Provoca ZeroDivisionError
+            self.escribir_salida("Después de la división\n")
+        except ZeroDivisionError:
+            self.escribir_salida("⚠️ División por cero\n")
+        finally:
+            self.escribir_salida("→ Ingresando al primer finally\n\n")
+
+    # --------------------------
+    def segundo_try(self):
+        self.escribir_salida("→ Ingresando al segundo try\n")
+        try:
+            objeto = None
+            objeto.toString()  # Provoca AttributeError
+            self.escribir_salida("Imprimiendo objeto\n")
+        except ArithmeticError:
+            self.escribir_salida("⚠️ División por cero\n")
+        except Exception:
+            self.escribir_salida("⚠️ Ocurrió una excepción\n")
+        finally:
+            self.escribir_salida("→ Ingresando al segundo finally\n\n")
+
+    # --------------------------
+    def escribir_salida(self, texto):
+        self.text_salida.config(state="normal")
+        self.text_salida.insert(tk.END, texto)
+        self.text_salida.config(state="disabled")
+
+    # --------------------------
+    def limpiar_salida(self):
+        self.text_salida.config(state="normal")
+        self.text_salida.delete(1.0, tk.END)
+        self.text_salida.config(state="disabled")
+
+
+# --------------------------
+# Ejecutar la aplicación
+# --------------------------
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    app = PruebaExcepcionesApp(root)
+    root.mainloop()
