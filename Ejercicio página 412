@@ -1,35 +1,126 @@
+import tkinter as tk
+from tkinter import messagebox
 import math
 
-def calcular_logaritmo_neperiano(valor):
-    try:
-        if valor < 0:
-            raise ArithmeticError("El valor debe ser un número positivo")
-        resultado = math.log(valor)
-        print(f"Resultado del logaritmo: {resultado}")
-    except ArithmeticError:
-        print("El valor debe ser un número positivo para calcular el logaritmo")
-    except ValueError:
-        print("El valor debe ser numérico para calcular el logaritmo")
+
+# ----------------------------
+# Funciones de cálculo
+# ----------------------------
+def calcular_logaritmo_natural(valor):
+    if valor < 0:
+        raise ArithmeticError("El valor debe ser un número positivo para el logaritmo.")
+    return math.log(valor)
+
 
 def calcular_raiz_cuadrada(valor):
-    try:
-        if valor < 0:
-            raise ArithmeticError("El valor debe ser un número positivo")
-        resultado = math.sqrt(valor)
-        print(f"Resultado de la raíz cuadrada: {resultado}")
-    except ArithmeticError:
-        print("El valor debe ser un número positivo para calcular la raíz cuadrada")
-    except ValueError:
-        print("El valor debe ser numérico para calcular la raíz cuadrada")
+    if valor < 0:
+        raise ArithmeticError("El valor debe ser un número positivo para la raíz cuadrada.")
+    return math.sqrt(valor)
 
-# Programa principal
-def main():
-    try:
-        valor = float(input("Valor numérico: "))
-        calcular_logaritmo_neperiano(valor)
-        calcular_raiz_cuadrada(valor)
-    except ValueError:
-        print("Entrada inválida. Debe ingresar un número.")
 
-main()
+# ----------------------------
+# Interfaz gráfica
+# ----------------------------
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Cálculo de Logaritmo Natural y Raíz Cuadrada")
+        self.root.config(bg="#e6f2ff")  # Fondo celeste suave
 
+        # ---- Título principal ----
+        tk.Label(root, text="Calculadora Matemática", 
+                 bg="#004d99", fg="white", 
+                 font=("Arial Rounded MT Bold", 16), pady=10)\
+            .grid(row=0, column=0, columnspan=2, sticky="ew")
+
+        # ---- Etiquetas y entrada ----
+        tk.Label(root, text="Ingrese un valor numérico:", 
+                 bg="#e6f2ff", font=("Arial", 12))\
+            .grid(row=1, column=0, padx=5, pady=10, sticky="e")
+
+        self.entry_valor = tk.Entry(root, width=30, font=("Arial", 12), relief="solid", bd=1)
+        self.entry_valor.grid(row=1, column=1, padx=10, pady=10)
+
+        # ---- Botones ----
+        self.boton_calcular = tk.Button(root, text="Calcular", 
+                                        bg="#007acc", fg="white",
+                                        activebackground="#005f99", activeforeground="white",
+                                        font=("Arial", 11, "bold"),
+                                        width=15, command=self.calcular)
+        self.boton_calcular.grid(row=2, column=0, padx=10, pady=5)
+
+        self.boton_limpiar = tk.Button(root, text="Limpiar", 
+                                       bg="#ff6600", fg="white",
+                                       activebackground="#cc5200", activeforeground="white",
+                                       font=("Arial", 11, "bold"),
+                                       width=15, command=self.limpiar)
+        self.boton_limpiar.grid(row=2, column=1, padx=10, pady=5)
+
+        # ---- Área de salida ----
+        tk.Label(root, text="Resultados:", bg="#e6f2ff", font=("Arial", 12))\
+            .grid(row=3, column=0, columnspan=2)
+
+        self.text_salida = tk.Text(root, width=60, height=10, font=("Consolas", 11), 
+                                   bg="white", fg="black", relief="solid", bd=1)
+        self.text_salida.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.text_salida.config(state="disabled")
+
+        # ---- Footer ----
+        tk.Label(root, text="By Python with Tkinter", 
+                 bg="#004d99", fg="white", 
+                 font=("Arial", 9), pady=4)\
+            .grid(row=5, column=0, columnspan=2, sticky="ew")
+
+    # ----------------------------
+    def calcular(self):
+        valor_texto = self.entry_valor.get().strip()
+
+        if not valor_texto:
+            messagebox.showerror("Error", "Debe ingresar un valor.")
+            return
+
+        try:
+            valor = float(valor_texto)
+
+            # Limpiar la salida antes de mostrar
+            self.text_salida.config(state="normal")
+            self.text_salida.delete(1.0, tk.END)
+
+            # Calcular logaritmo natural
+            try:
+                logaritmo = calcular_logaritmo_natural(valor)
+                self.escribir_salida(f"Logaritmo natural (ln) de {valor} = {logaritmo:.8f}\n")
+            except ArithmeticError as e:
+                self.escribir_salida(f"❌ Error en logaritmo: {e}\n")
+
+            # Calcular raíz cuadrada
+            try:
+                raiz = calcular_raiz_cuadrada(valor)
+                self.escribir_salida(f"Raíz cuadrada de {valor} = {raiz:.8f}\n")
+            except ArithmeticError as e:
+                self.escribir_salida(f"❌ Error en raíz cuadrada: {e}\n")
+
+            self.text_salida.config(state="disabled")
+
+        except ValueError:
+            messagebox.showerror("Error", "Entrada inválida. Debe ingresar un número.")
+
+    # ----------------------------
+    def escribir_salida(self, texto):
+        self.text_salida.insert(tk.END, texto)
+
+    # ----------------------------
+    def limpiar(self):
+        self.entry_valor.delete(0, tk.END)
+        self.text_salida.config(state="normal")
+        self.text_salida.delete(1.0, tk.END)
+        self.text_salida.config(state="disabled")
+
+
+# ----------------------------
+# Ejecutar la aplicación
+# ----------------------------
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = App(root)
+    root.mainloop()
