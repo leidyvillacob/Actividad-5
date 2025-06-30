@@ -1,3 +1,10 @@
+import tkinter as tk
+from tkinter import messagebox
+
+
+# -------------------------
+# Clase Vendedor
+# -------------------------
 class Vendedor:
     def __init__(self, nombre, apellidos):
         self.nombre = nombre
@@ -12,25 +19,110 @@ class Vendedor:
         self.edad = edad
 
     def imprimir(self):
-        print(f"Nombre del vendedor = {self.nombre}")
-        print(f"Apellidos del vendedor = {self.apellidos}")
-        print(f"Edad del vendedor = {self.edad}")
+        return (
+            f"🧑 Nombre del vendedor: {self.nombre}\n"
+            f"🧑‍🦰 Apellidos del vendedor: {self.apellidos}\n"
+            f"🎂 Edad del vendedor: {self.edad} años\n"
+        )
 
 
-# Bloque principal para ejecución en Colab
-def main():
-    try:
-        nombre = input("Nombre del vendedor: ")
-        apellidos = input("Apellidos del vendedor: ")
-        edad = int(input("Edad del vendedor: "))
+# -------------------------
+# Interfaz gráfica
+# -------------------------
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("📝 Registro de Vendedor")
+        self.root.configure(bg="#e6f2ff")
 
-        vendedor = Vendedor(nombre, apellidos)
-        vendedor.verificar_edad(edad)
-        vendedor.imprimir()
+        # ---------- Título ----------
+        tk.Label(root, text="Formulario de Registro de Vendedor",
+                 font=("Arial Rounded MT Bold", 16),
+                 bg="#004d99", fg="white", pady=10)\
+            .grid(row=0, column=0, columnspan=2, sticky="ew")
 
-    except ValueError as e:
-        print(f"Error: {e}")
+        # ---------- Etiquetas ----------
+        tk.Label(root, text="Nombre:", bg="#e6f2ff", font=("Arial", 11, "bold"))\
+            .grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        tk.Label(root, text="Apellidos:", bg="#e6f2ff", font=("Arial", 11, "bold"))\
+            .grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        tk.Label(root, text="Edad:", bg="#e6f2ff", font=("Arial", 11, "bold"))\
+            .grid(row=3, column=0, padx=5, pady=5, sticky="e")
 
-# Ejecutar programa
-main()
+        # ---------- Campos de entrada ----------
+        self.entry_nombre = tk.Entry(root, width=30)
+        self.entry_nombre.grid(row=1, column=1, padx=5, pady=5)
 
+        self.entry_apellidos = tk.Entry(root, width=30)
+        self.entry_apellidos.grid(row=2, column=1, padx=5, pady=5)
+
+        self.entry_edad = tk.Entry(root, width=30)
+        self.entry_edad.grid(row=3, column=1, padx=5, pady=5)
+
+        # ---------- Botones ----------
+        tk.Button(root, text="✅ Registrar", width=15, bg="#00b33c", fg="white",
+                  command=self.registrar)\
+            .grid(row=4, column=0, pady=10)
+
+        tk.Button(root, text="🗑️ Limpiar", width=15, bg="#cc0000", fg="white",
+                  command=self.limpiar)\
+            .grid(row=4, column=1, pady=10)
+
+        # ---------- Área de salida ----------
+        tk.Label(root, text="Resultado:", bg="#e6f2ff", font=("Arial", 11, "bold"))\
+            .grid(row=5, column=0, columnspan=2, sticky="w", padx=10)
+
+        self.text_salida = tk.Text(root, width=50, height=6, state="disabled",
+                                   bg="white", fg="black", relief="solid", bd=1, font=("Consolas", 10))
+        self.text_salida.grid(row=6, column=0, columnspan=2, padx=10, pady=5)
+
+        # ---------- Footer ----------
+        tk.Label(root, text="Desarrollado con Python & Tkinter", bg="#004d99", fg="white",
+                 font=("Arial", 9), pady=4)\
+            .grid(row=7, column=0, columnspan=2, sticky="ew")
+
+    # -------------------------
+    def registrar(self):
+        nombre = self.entry_nombre.get().strip()
+        apellidos = self.entry_apellidos.get().strip()
+        edad_texto = self.entry_edad.get().strip()
+
+        if not nombre or not apellidos or not edad_texto:
+            messagebox.showerror("❌ Error", "Todos los campos son obligatorios.")
+            return
+
+        try:
+            edad = int(edad_texto)
+            vendedor = Vendedor(nombre, apellidos)
+            vendedor.verificar_edad(edad)
+
+            resultado = vendedor.imprimir()
+            self.mostrar_salida(resultado)
+
+        except ValueError as e:
+            messagebox.showerror("❌ Error", str(e))
+
+    # -------------------------
+    def mostrar_salida(self, texto):
+        self.text_salida.config(state="normal")
+        self.text_salida.delete(1.0, tk.END)
+        self.text_salida.insert(tk.END, texto)
+        self.text_salida.config(state="disabled")
+
+    # -------------------------
+    def limpiar(self):
+        self.entry_nombre.delete(0, tk.END)
+        self.entry_apellidos.delete(0, tk.END)
+        self.entry_edad.delete(0, tk.END)
+        self.text_salida.config(state="normal")
+        self.text_salida.delete(1.0, tk.END)
+        self.text_salida.config(state="disabled")
+
+
+# -------------------------
+# Ejecutar la aplicación
+# -------------------------
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = App(root)
+    root.mainloop()
